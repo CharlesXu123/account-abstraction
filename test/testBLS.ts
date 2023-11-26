@@ -6,7 +6,7 @@
 // import * as EntryPoint from "@account-abstraction/contracts/artifacts/EntryPoint.json";
 // import * as VerifyingPaymaster from "@account-abstraction/contracts/artifacts/VerifyingPaymaster.json";
 
-// import { deployAll, LOCAL_CHAIN, HARDHAT_CHAIN } from "../src/Deploy";
+// import { deployAll, LOCAL_CHAIN, HARDHAT_CHAIN } from "../src/DeployBLS";
 // import { VerifyingPaymasterAPI } from "../src/VerifyingPaymasterAPI";
 
 // import { HttpRpcClient, DefaultGasOverheads } from "@account-abstraction/sdk";
@@ -144,7 +144,7 @@
 
 //     const op = await adminAccount.createSignedUserOp({ target, data });
 
-//     console.log("UserOperation: ", await ethers.utils.resolveProperties(op));
+//     // console.log("UserOperation: ", await ethers.utils.resolveProperties(op));
 
 //     const uoHash = await sendUserOp(config, op);
 //     console.log(`\tUserOperation hash: ${uoHash}`);
