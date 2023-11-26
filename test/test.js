@@ -54,6 +54,38 @@ describe("BLSSignatureAggregator", function () {
     expect(res).to.equal(true);
   });
 
+  it("Should validate bls signature on chain using validateUserOpSignature2", async function () {
+    mcl.setMappingMode("TI");
+    mcl.setDomain("testing evmbls");
+
+    const message = randHex(12);
+    const { pubkey, secret } = mcl.newKeyPair();
+
+    const { signature, M } = mcl.sign(message, secret);
+
+    let message_ser = mcl.g1ToBN(M);
+    let pubkey_ser = mcl.g2ToBN(pubkey);
+    let sig_ser = mcl.g1ToBN(signature);
+
+    console.log("sig_ser", sig_ser);
+
+    const messageBytes = ethers.utils.concat(
+      message_ser.map(ethers.utils.arrayify)
+    );
+    const pubkeyBytes = ethers.utils.concat(
+      pubkey_ser.map(ethers.utils.arrayify)
+    );
+    const sigBytes = ethers.utils.concat(sig_ser.map(ethers.utils.arrayify));
+
+    const res = await aggregator.validateUserOpSignature2(
+      sigBytes,
+      pubkeyBytes,
+      messageBytes
+    );
+
+    expect(res).to.equal(true);
+  });
+
   it("Should validate normal signing and multi-sig in bls-wasm off-chain", async function () {
     // should be 21888242871839275222246405745257275088696311157297823662689037894645226208583
     console.log("bls feild order", bls.getFieldOrder());
@@ -144,7 +176,7 @@ describe("BLSSignatureAggregator", function () {
     let pubkey_ser = mcl.g2ToBN(pubkey);
     let sig_ser = mcl.g1ToBN(signature);
 
-    const res = await aggregator.validateUserOpSignature2(
+    const res = await aggregator.validateUserOpSignature1(
       sig_ser,
       pubkey_ser,
       message_ser

@@ -96,35 +96,44 @@ contract BLSSignatureAggregator {
     }
 
     function validateUserOpSignature2(
-        uint256[2] calldata signature,
-        uint256[4] calldata pubkey,
-        uint256[2] calldata message
+        bytes calldata _signature,
+        bytes calldata _pubkey,
+        bytes calldata _message
     ) external view returns (bool) {
-        uint256[12] memory input = [
-            signature[0],
-            signature[1],
-            nG2x1,
-            nG2x0,
-            nG2y1,
-            nG2y0,
-            message[0],
-            message[1],
-            pubkey[1],
-            pubkey[0],
-            pubkey[3],
-            pubkey[2]
-        ];
-        uint256[1] memory out;
-        bool success;
-        // solium-disable-next-line security/no-inline-assembly
-        assembly {
-            success := staticcall(sub(gas(), 2000), 8, input, 384, out, 32)
-            switch success
-            case 0 {
-                invalid()
-            }
-        }
-        require(success, "");
-        return out[0] != 0;
+        uint256[2] memory signature = abi.decode(_signature, (uint256[2]));
+        uint256[4] memory pubkey = abi.decode(_pubkey, (uint256[4]));
+        uint256[2] memory message = abi.decode(_message, (uint256[2]));
+
+        console.log("signature: %s", signature[0]);
+        console.log("signature: %s", signature[1]);
+
+        return BLSOpen.verifySingle(signature, pubkey, message);
+
+        //     uint256[12] memory input = [
+        //         signature[0],
+        //         signature[1],
+        //         nG2x1,
+        //         nG2x0,
+        //         nG2y1,
+        //         nG2y0,
+        //         message[0],
+        //         message[1],
+        //         pubkey[1],
+        //         pubkey[0],
+        //         pubkey[3],
+        //         pubkey[2]
+        //     ];
+        //     uint256[1] memory out;
+        //     bool success;
+        //     // solium-disable-next-line security/no-inline-assembly
+        //     assembly {
+        //         success := staticcall(sub(gas(), 2000), 8, input, 384, out, 32)
+        //         switch success
+        //         case 0 {
+        //             invalid()
+        //         }
+        //     }
+        //     require(success, "");
+        //     return out[0] != 0;
     }
 }
